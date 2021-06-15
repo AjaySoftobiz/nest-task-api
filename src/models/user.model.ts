@@ -11,9 +11,10 @@ export class User {
   @Column({name:'Email'})
   public email: string;
 
+  @Column({name:"Password"})
+  password:string;
+
   @Column({name:'Phone'})
   public phone: string;
 
-  @Column({name:'Age'})
-  public age: number;
 }

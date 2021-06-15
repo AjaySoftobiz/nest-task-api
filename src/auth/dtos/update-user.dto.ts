@@ -13,7 +13,4 @@ export class UpdateUserDto {
   @IsPhoneNumber()
   phone?: string;
 
-  @IsOptional()
-  @MaxLength(3)
-  age?: number;
 }

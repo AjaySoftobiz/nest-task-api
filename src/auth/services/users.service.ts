@@ -13,7 +13,13 @@ export class UsersService {
 
   // create and save new user to DB
   public async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { name, email, phone, age } = createUserDto;
+    // check if there are already 10 or more than 10 users
+    const users = await this.userRepository.find()
+    if(users.length>=10){
+      throw new NotAcceptableException('Cannot add more than 10 users')
+    }
+    
+    const { name, email,password, phone } = createUserDto;
     
     // chek if user already exist with same email
     const foundUser = await this.userRepository.find({email})
@@ -24,8 +30,9 @@ export class UsersService {
     const user = this.userRepository.create({
       name,
       email,
+      password,
       phone,
-      age,
+      
     });
 
     await this.userRepository.save(user);
@@ -34,7 +41,11 @@ export class UsersService {
 
   //get all users from db
   public async getUsers(): Promise<User[]> {
-    return this.userRepository.find();
+    const users =await this.userRepository.find();
+    if(!users.length){
+      throw new NotFoundException('No user found')
+    }
+    return users
   }
 
   //get user using Id
@@ -60,7 +71,7 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    const { name, email, phone, age } = updateUserDto;
+    const { name, email, phone } = updateUserDto;
 
     const user = await this.getUserById(id);
 
@@ -72,9 +83,6 @@ export class UsersService {
     }
     if (phone) {
       user.phone = phone;
-    }
-    if (age) {
-      user.age = age;
     }
 
     await this.userRepository.save(user);
