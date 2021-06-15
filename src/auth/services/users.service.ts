@@ -1,51 +1,27 @@
-import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, UpdateUserDto } from '../dtos';
 import { User } from '../../models';
 import { UserRepository } from '../repositories';
 
-
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UserRepository) private readonly userRepository: UserRepository,
+    @InjectRepository(UserRepository)
+    private readonly userRepository: UserRepository,
   ) {}
-
-  // create and save new user to DB
-  public async createUser(createUserDto: CreateUserDto): Promise<User> {
-    // check if there are already 10 or more than 10 users
-    const users = await this.userRepository.find()
-    if(users.length>=10){
-      throw new NotAcceptableException('Cannot add more than 10 users')
-    }
-    
-    const { name, email,password, phone } = createUserDto;
-    
-    // chek if user already exist with same email
-    const foundUser = await this.userRepository.find({email})
-    if(foundUser){
-      throw new NotAcceptableException('User Already exists with same email');
-    }
-
-    const user = this.userRepository.create({
-      name,
-      email,
-      password,
-      phone,
-      
-    });
-
-    await this.userRepository.save(user);
-    return user;
-  }
 
   //get all users from db
   public async getUsers(): Promise<User[]> {
-    const users =await this.userRepository.find();
-    if(!users.length){
-      throw new NotFoundException('No user found')
+    const users = await this.userRepository.find();
+    if (!users.length) {
+      throw new NotFoundException('No user found');
     }
-    return users
+    return users;
   }
 
   //get user using Id

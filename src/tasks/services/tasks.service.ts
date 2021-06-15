@@ -16,10 +16,9 @@ export class TasksService {
 
   // create new Task
   public async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    const { title, description } = createTaskDto;
     const task = this.taskRepository.create({
-      title,
-      description,
+      title:createTaskDto.title,
+      description:createTaskDto.description,
     });
 
     await this.taskRepository.save(task);
@@ -29,7 +28,6 @@ export class TasksService {
   // get All Tasks
   public async getTasks(): Promise<Task[]> {
     const tasks = await this.taskRepository.find();
-    console.log(tasks);
     if (tasks.length === 0) {
       throw new NotFoundException('No task found');
     }

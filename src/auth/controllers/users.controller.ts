@@ -7,11 +7,6 @@ import { UsersService } from '../services/users.service';
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Post()
-  public createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.createUser(createUserDto);
-  }
-
   @Get()
   public getUsers(): Promise<User[]> {
     return this.userService.getUsers();

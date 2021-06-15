@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
 import { Task } from 'src/models/task.model';
 import { CreateTaskDto, UpdateTaskCompletedDto } from '../dtos';
@@ -18,7 +17,7 @@ export class TasksController {
 
   @Post()
   public async createTask(
-    @Query() createTaskDto: CreateTaskDto,
+    @Body() createTaskDto: CreateTaskDto,
   ): Promise<Task> {
     return this.tasksService.createTask(createTaskDto);
   }
