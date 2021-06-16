@@ -1,48 +1,27 @@
-// import { Injectable } from '@nestjs/common';
-// import { ConfigService } from '@nestjs/config';
-// import { PassportStrategy } from '@nestjs/passport';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { ExtractJwt, Strategy } from 'passport-jwt';
-// import { UserRepository } from './repositories';
-
-// @Injectable()
-// export class JwtStrategy extends PassportStrategy(Strategy) {
-//   constructor(
-//     @InjectRepository(UserRepository)
-//     private userRepository: UserRepository,
-//     private _config: ConfigService,
-//   ) {
-//     supper({
-//       secretOrKey: this._config.get('JWT_SECRET'),
-//       jwtFormRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//       ignoreExpiration: false,
-//     });
-//   }
-// }
-
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserRepository } from '../repositories';
+import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtPayload } from '../dtos';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from 'src/models';
+import { JwtPayload } from '../dtos';
+import { UserRepository } from '../repositories';
+
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @InjectRepository(UserRepository)
-    private userRepository: UserRepository,
+    private usersRepository: UserRepository,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: 'ajaysecret',
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
 
   async validate(payload: JwtPayload): Promise<User> {
     const { email } = payload;
-    const user: User = await this.userRepository.findOne({ email });
+    const user: User = await this.usersRepository.findOne({ email });
 
     if (!user) {
       throw new UnauthorizedException();

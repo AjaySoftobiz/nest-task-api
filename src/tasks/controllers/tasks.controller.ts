@@ -6,19 +6,20 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Task } from 'src/models/task.model';
 import { CreateTaskDto, UpdateTaskCompletedDto } from '../dtos';
 import { TasksService } from '../services';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(private tasksService: TasksService) {}
 
   @Post()
-  public async createTask(
-    @Body() createTaskDto: CreateTaskDto,
-  ): Promise<Task> {
+  public async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
     return this.tasksService.createTask(createTaskDto);
   }
 
